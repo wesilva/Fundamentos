@@ -1,0 +1,108 @@
+using System;
+
+namespace OOP
+{
+    #region Caso 1
+
+    public class PessoaFisica1 : Pessoa
+    {
+        public string Cpf { get; set; }
+    }
+
+    public class PessoaFisica2
+    {
+        public Pessoa Pessoa { get; set; }
+        public string Cpf { get; set; }
+    }
+
+    public class TetesHerancaComposicao
+    {
+        public TetesHerancaComposicao()
+        {
+            var pessoaHeranca = new PessoaFisica1
+            {
+                Nome = "Wellington",
+                DataDeNascimento = DateTime.Now,
+                Cpf = "12345678912"
+            };
+
+            var pessoaComposicao = new PessoaFisica2
+            {
+                Pessoa = new Pessoa
+                {
+                    Nome = "Wellington",
+                    DataDeNascimento = DateTime.Now
+                },
+                Cpf = "98765432145"
+            };
+
+            var nomeHerança = pessoaHeranca.Nome;
+            var nomeComposicao = pessoaComposicao.Pessoa.Nome;
+        }
+    }
+
+    #endregion
+
+    #region Caso 2
+
+    public interface IRepositorio<T>
+    {
+        void Adicionar(T obj);
+        void Excluir(T obj);
+    }
+
+    public interface IRepositorioPessoa
+    {
+        void Adicionar(Pessoa obj);
+    }
+
+    public class Repositorio<T> : IRepositorio<T>
+    {
+        public void Adicionar(T obj)
+        {
+            
+        }
+
+        public void Excluir(T obj)
+        {
+            
+        }
+    }
+
+    public class RepositorioHerancaPessoa : Repositorio<Pessoa>, IRepositorioPessoa
+    {
+        public void TesteExcluir(){
+            Excluir(new Pessoa());
+        }
+    }
+
+    public class RepositorioComposicaoPessoa : IRepositorioPessoa
+    {
+        private readonly IRepositorio<Pessoa> _repositorioPessoa;
+
+        public RepositorioComposicaoPessoa(IRepositorio<Pessoa> repositorioPessoa)
+        {
+            _repositorioPessoa = repositorioPessoa;
+        }
+
+        public void Adicionar(Pessoa obj)
+        {
+            _repositorioPessoa.Adicionar(obj);
+        }
+    }
+
+    public class TestesHerancaComposicao2
+    {
+        public TestesHerancaComposicao2()
+        {
+            var repoH = new RepositorioHerancaPessoa();
+            repoH.Adicionar(new Pessoa());
+            repoH.Excluir(new Pessoa());
+
+            var repoC = new RepositorioComposicaoPessoa(new Repositorio<Pessoa>());
+            repoC.Adicionar(new Pessoa());
+        }
+    }
+
+    #endregion
+}
